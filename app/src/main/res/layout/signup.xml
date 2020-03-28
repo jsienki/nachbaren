@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".MainActivity">
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:text="Sign Up"
+        android:textSize="24sp"
+        android:layout_gravity="center" />
+
+    <EditText
+        android:id="@+id/usernameInput"
+        android:layout_width="160dp"
+        android:layout_height="40dp"
+        android:hint="Phone Number" />
+
+    <EditText
+        android:id="@+id/passwordInput"
+        android:layout_width="160dp"
+        android:layout_height="40dp"
+        android:hint="Password" />
+
+    <EditText
+        android:id="@+id/rPasswordInput"
+        android:layout_width="160dp"
+        android:layout_height="40dp"
+        android:hint="Repeat Password" />
+
+    <Button
+        android:id="@+id/signUpButton"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:text="Sign Up" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>
