@@ -20,7 +20,7 @@ public class MyCookieJar implements CookieJar {
     public List<Cookie> loadForRequest(HttpUrl url) {
         if (cookies != null)
             return cookies;
-        return new ArrayList<Cookie>();
+        return new ArrayList<>();
 
     }
 }

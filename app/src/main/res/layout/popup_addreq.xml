@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/popup_background"
@@ -9,27 +10,31 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Request"
-        android:textSize="16sp" />
+        android:text="@string/add_req"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/textInput"
         android:layout_width="match_parent"
         android:layout_height="120dp"
+        android:padding="2dp"
         android:background="@drawable/edittextborder"
         android:gravity="top|start"
         android:maxLength="255"
-        android:maxLines="20" />
+        android:maxLines="20"
+        android:autofillHints=""
+        android:inputType=""
+        tools:ignore="LabelFor" />
 
     <TextView
         android:id="@+id/limit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:text="0/255"
-        android:textSize="16sp" />
-
-
+        android:text="@string/text_limit"
+        android:textSize="16sp"
+        tools:ignore="RtlHardcoded" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,7 +44,7 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Food" />
+            android:text="@string/food" />
 
         <CheckBox
             android:id="@+id/foodCheck"
@@ -59,7 +64,7 @@
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="Drugs" />
+                android:text="@string/drugstore" />
 
             <CheckBox
                 android:id="@+id/drugCheck"
@@ -76,7 +81,7 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Transport" />
+            android:text="@string/transport" />
 
         <CheckBox
             android:id="@+id/transportCheck"
@@ -95,7 +100,7 @@
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="Other" />
+                android:text="@string/other" />
 
             <CheckBox
                 android:id="@+id/otherCheck"
@@ -116,13 +121,17 @@
             android:id="@+id/addButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add" />
+            android:layout_weight="1"
+            android:text="@string/add"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel" />
+            android:layout_weight="1"
+            android:text="@string/cancel"
+            tools:ignore="ButtonStyle" />
     </LinearLayout>
 
 </LinearLayout>

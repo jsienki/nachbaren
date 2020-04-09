@@ -14,7 +14,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class HTTPHandler {
+class HTTPHandler {
     private MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private String baseURL;
     private OkHttpClient client;
@@ -26,26 +26,15 @@ public class HTTPHandler {
         createClient();
     }
 
+    void clearCookies() {
+        cookies = new MyCookieJar();
+    }
+
     private void createClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.cookieJar(cookies);
         client = builder.build();
     }
-
-    int get(String ext) throws IOException {
-        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(baseURL + ext)).newBuilder();
-        urlBuilder.addQueryParameter("i", "100");
-        String lUrl = urlBuilder.toString();
-
-        Request request = new Request.Builder()
-                .url(lUrl)
-                .get()
-                .build();
-
-        Response response = client.newCall(request).execute();
-        return response.code();
-    }
-
 
     int post(String ext, String json) throws IOException {
         RequestBody body = RequestBody.create(JSON, json);
@@ -75,12 +64,77 @@ public class HTTPHandler {
         }
     }
 
-    JSONArray getJSONArrayParams(String ext, String params, String mode) throws IOException {
+    JSONArray getJSONArrayParams(String ext, String country, String region, String city) throws IOException {
         HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(baseURL + ext)).newBuilder();
-        urlBuilder.addQueryParameter("Country", "CH");
-        if (params != null) {
-            urlBuilder.addQueryParameter(mode, params);
+        urlBuilder.addQueryParameter("Country", country);
+        urlBuilder.addQueryParameter("Region", region);
+        urlBuilder.addQueryParameter("City", city);
+        String lUrl = urlBuilder.toString();
+
+        Request request = new Request.Builder()
+                .url(lUrl)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (response.body() != null) {
+                return new JSONArray(response.body().string());
+            } else {
+                return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
         }
+    }
+
+    JSONArray getJSONArrayParams2(String ext, String country, String pCode) throws IOException {
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(baseURL + ext)).newBuilder();
+        urlBuilder.addQueryParameter("Country", country);
+        urlBuilder.addQueryParameter("PostalCode", pCode);
+        String lUrl = urlBuilder.toString();
+
+        Request request = new Request.Builder()
+                .url(lUrl)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (response.body() != null) {
+                return new JSONArray(response.body().string());
+            } else {
+                return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    JSONArray getJSONArrayParams3(String ext, String country, String langCode) throws IOException {
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(baseURL + ext)).newBuilder();
+        urlBuilder.addQueryParameter("CountryCode", country);
+        urlBuilder.addQueryParameter("LangCode", langCode);
+        String lUrl = urlBuilder.toString();
+
+        Request request = new Request.Builder()
+                .url(lUrl)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (response.body() != null) {
+                return new JSONArray(response.body().string());
+            } else {
+                return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    JSONArray getJSONArrayParams4(String ext, String country, String regCode) throws IOException {
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(baseURL + ext)).newBuilder();
+        urlBuilder.addQueryParameter("CountryCode", country);
+        urlBuilder.addQueryParameter("RegionCode", regCode);
         String lUrl = urlBuilder.toString();
 
         Request request = new Request.Builder()

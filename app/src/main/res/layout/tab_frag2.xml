@@ -4,28 +4,42 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="My Requests"
-        android:textSize="16sp"/>
+        <Button
+            android:id="@+id/addRequest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_req" />
 
-    <Button
-        android:id="@+id/addRequest"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Request" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/my_requests"
+            android:textStyle="bold"
+            android:textSize="16sp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="4dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Accepted Requests"
-        android:textSize="16sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/accepted_req"
+            android:textStyle="bold"
+            android:textSize="16sp" />
 
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerAccepted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

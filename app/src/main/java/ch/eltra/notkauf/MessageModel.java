@@ -1,6 +1,6 @@
 package ch.eltra.notkauf;
 
-public class MessageModel {
+class MessageModel {
     boolean Shop;
     String Notice;
     boolean Drugstore;

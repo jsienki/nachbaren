@@ -10,8 +10,6 @@ import com.google.android.material.tabs.TabLayout;
 
 public class MenuActivity extends AppCompatActivity {
 
-    private ViewPager mViewPager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +18,7 @@ public class MenuActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        mViewPager = findViewById(R.id.container);
+        ViewPager mViewPager = findViewById(R.id.container);
         setupViewPager(mViewPager);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
@@ -29,9 +27,9 @@ public class MenuActivity extends AppCompatActivity {
 
     void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
-        adapter.addFragment(new TabFragment1(), "Need Help");
-        adapter.addFragment(new TabFragment2(), "My Requests");
-        adapter.addFragment(new TabFragment3(), "Settings");
+        adapter.addFragment(new TabFragment1(), getString(R.string.need_help));
+        adapter.addFragment(new TabFragment2(), getString(R.string.my_requests));
+        adapter.addFragment(new TabFragment3(), getString(R.string.settings));
         viewPager.setAdapter(adapter);
     }
 }

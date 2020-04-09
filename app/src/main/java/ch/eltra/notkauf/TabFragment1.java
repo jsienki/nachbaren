@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,34 +36,71 @@ import java.util.Objects;
 import static ch.eltra.notkauf.MainActivity.handler;
 
 public class TabFragment1 extends Fragment {
-    private static final String TAG = "TabFragment1";
     private RecyclerView mRecyclerView;
     private RecyclerAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<RecyclerItem> recyclerList;
-    private Spinner dropdown;
+    private Spinner dropdown, countrySpinner, regionSpinner;
     private SwipeRefreshLayout mSwipeContainer;
+    private RadioButton radioPeri, radioSearch;
+    private EditText cityEdit, postalEdit;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_frag1, container, false);
         dropdown = view.findViewById(R.id.spinner);
-        setupSpinner();
+        countrySpinner = view.findViewById(R.id.countrySpinner);
+        regionSpinner = view.findViewById(R.id.regionSpinner);
+        radioPeri = view.findViewById(R.id.radioPeri);
+        radioSearch = view.findViewById(R.id.radioSearch);
         mSwipeContainer = view.findViewById(R.id.swipeContainer);
         mRecyclerView = view.findViewById(R.id.recycler);
+        cityEdit = view.findViewById(R.id.cityEdit);
+        postalEdit = view.findViewById(R.id.postalEdit);
+
+        JSONObject contact = null;
+        try {
+            contact = handler.getJSON("/api/Contacts/get");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (contact == null) {
+            radioSearch.setChecked(true);
+            radioPeri.setChecked(false);
+            dropdown.setEnabled(false);
+            mSwipeContainer.setEnabled(false);
+        } else {
+            radioPeri.setChecked(true);
+            radioSearch.setChecked(false);
+            dropdown.setEnabled(true);
+            mSwipeContainer.setEnabled(true);
+            countrySpinner.setEnabled(false);
+            regionSpinner.setEnabled(false);
+            cityEdit.setEnabled(false);
+            postalEdit.setEnabled(false);
+        }
+
+
+        try {
+            setupSpinner();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         try {
             setupRecycler();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
-        setupSwiper(view);
+        setupSwipe(view);
 
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    getOrders();
+                    if (radioPeri.isChecked()) {
+                        getOrders();
+                    }
                     mAdapter.notifyDataSetChanged();
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
@@ -71,6 +111,36 @@ public class TabFragment1 extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
+
+        });
+        radioPeri.setOnClickListener(v -> {
+            radioPeri.setChecked(true);
+            radioSearch.setChecked(false);
+            dropdown.setEnabled(true);
+            mSwipeContainer.setEnabled(true);
+            try {
+                getOrders();
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+            mAdapter.notifyDataSetChanged();
+            countrySpinner.setEnabled(false);
+            regionSpinner.setEnabled(false);
+            cityEdit.setEnabled(false);
+            postalEdit.setEnabled(false);
+        });
+
+        radioSearch.setOnClickListener(v -> {
+            radioSearch.setChecked(true);
+            radioPeri.setChecked(false);
+            dropdown.setEnabled(false);
+            mSwipeContainer.setEnabled(false);
+            recyclerList.clear();
+            mAdapter.notifyDataSetChanged();
+            countrySpinner.setEnabled(true);
+            regionSpinner.setEnabled(true);
+            cityEdit.setEnabled(true);
+            postalEdit.setEnabled(true);
         });
 
         return view;
@@ -78,30 +148,50 @@ public class TabFragment1 extends Fragment {
 
     private void setupRecycler() throws IOException, JSONException {
         recyclerList = new ArrayList<>();
-        getOrders();
-        mLayoutManager = new GridLayoutManager(getActivity(), 2);
+        if (radioPeri.isChecked()) {
+            getOrders();
+        }
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
         mAdapter = new RecyclerAdapter(recyclerList);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onDetailsClick(int position) {
-                Intent myIntent = new Intent(getActivity(), DetailsPopup.class);
-                myIntent.putExtra("Uuid", recyclerList.get(position).getText1());
+        mAdapter.setOnItemClickListener(position -> {
+            Intent myIntent = new Intent(getActivity(), DetailsPopup.class);
+            String uuid = recyclerList.get(position).getText1();
+            myIntent.putExtra("Uuid", uuid);
+            if (checkIfAccepted(uuid)) {
+                myIntent.putExtra("mode", 2);
+            } else {
                 myIntent.putExtra("mode", 0);
-                startActivity(myIntent);
             }
+            startActivity(myIntent);
         });
 
     }
 
-    private void setupSwiper(View view) {
-        mSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-        mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
+    private boolean checkIfAccepted(String uuid) throws IOException {
+        boolean hasAccepted = false;
+        JSONArray myJSON = handler.getJSONArray("/api/Orders/get-assigned");
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<OrderInfoModel>>() {
+        }.getType();
+        if (myJSON != null) {
+            List<OrderInfoModel> modelList = gson.fromJson(myJSON.toString(), listType);
+            for (int i = 0; i < modelList.size(); i++) {
+                if (uuid.equals(modelList.get(i).Order.Uuid)) {
+                    hasAccepted = true;
+                }
+            }
+        }
+
+        return hasAccepted;
+    }
+
+    private void setupSwipe(View view) {
+        mSwipeContainer = view.findViewById(R.id.swipeContainer);
+        mSwipeContainer.setOnRefreshListener(() -> {
                 try {
                     getOrders();
                 } catch (IOException | JSONException e) {
@@ -109,13 +199,7 @@ public class TabFragment1 extends Fragment {
                 }
                 mAdapter.notifyDataSetChanged();
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSwipeContainer.setRefreshing(false);
-                    }
-                }, 2000);
-            }
+                new Handler().postDelayed(() -> mSwipeContainer.setRefreshing(false), 2000);
         });
         mSwipeContainer.setColorSchemeResources(R.color.colorPrimary,
                 android.R.color.holo_green_dark,
@@ -123,28 +207,65 @@ public class TabFragment1 extends Fragment {
                 android.R.color.holo_blue_dark);
     }
 
-    private void setupSpinner() {
-        String[] items = new String[]{"City", "Region", "Country"};
+    private void setupSpinner() throws IOException {
+        String[] items = new String[]{getString(R.string.m_postal), getString(R.string.city), getString(R.string.region), getString(R.string.country)};
         ArrayAdapter adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
+
+        String[] items2 = new String[]{getString(R.string.switzerland)};
+        ArrayAdapter adapter2 = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_dropdown_item, items2);
+        countrySpinner.setAdapter(adapter2);
+
+        JSONArray regions = handler.getJSONArrayParams3("/api/Regional/regions", "CH", "de");
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<RegionModel>>() {
+        }.getType();
+
+        List<RegionModel> reg = gson.fromJson(regions.toString(), listType);
+        ArrayList<String> regNames = new ArrayList<>();
+        for (int i = 0; i < reg.size(); i++) {
+            regNames.add(reg.get(i).Name);
+        }
+        String[] items3 = regNames.toArray(items2);
+
+        ArrayAdapter adapter3 = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_dropdown_item, items3);
+        regionSpinner.setAdapter(adapter3);
+
+        regionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+
+        });
     }
 
     private void getOrders() throws IOException, JSONException {
-        //JSONArray orders = handler.getJSONArray("/api/Orders/get-all");
         JSONArray orders = null;
         JSONObject contact = handler.getJSON("/api/Contacts/get");
-        switch (dropdown.getSelectedItem().toString()) {
-            case "City":
-                orders = handler.getJSONArrayParams("/api/Orders/get-all-region", contact.get("City").toString(), dropdown.getSelectedItem().toString());
-                break;
-            case "Region":
-                orders = handler.getJSONArrayParams("/api/Orders/get-all-Region", contact.get("Region").toString(), dropdown.getSelectedItem().toString());
-                break;
-            case "Country":
-                orders = handler.getJSONArrayParams("/api/Orders/get-all-Region", null, dropdown.getSelectedItem().toString());
-                break;
-            default:
-                break;
+        if (contact != null) {
+            switch (dropdown.getSelectedItemPosition()) {
+                case 0:
+                    orders = handler.getJSONArrayParams2("/api/Orders/get-postal-code", "CH", contact.get("PostalCode").toString());
+                    break;
+                case 1:
+                    orders = handler.getJSONArrayParams("/api/Orders/get-all-region", "CH", contact.get("Region").toString(), contact.get("City").toString());
+                    break;
+                case 2:
+                    orders = handler.getJSONArrayParams("/api/Orders/get-all-Region", "CH", contact.get("Region").toString(), null);
+                    break;
+                case 3:
+                    orders = handler.getJSONArrayParams("/api/Orders/get-all-Region", "CH", null, null);
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.contact_warning), Toast.LENGTH_LONG).show();
         }
         Gson gson = new Gson();
         Type listType = new TypeToken<List<OrderInfoModel>>() {
@@ -158,7 +279,7 @@ public class TabFragment1 extends Fragment {
 
                 MessageModel msgModel = gson.fromJson(modelList.get(i).Order.Message, MessageModel.class);
 
-                recyclerList.add(i, new RecyclerItem(modelList.get(i).Order.Uuid, modelList.get(i).Order.Created.substring(11, 16), "1km",
+                recyclerList.add(i, new RecyclerItem(modelList.get(i).Order.Uuid, modelList.get(i).Order.Created.substring(11, 16), "",
                         msgModel.Shop, msgModel.Drugstore, msgModel.Car, msgModel.Other, modelList.get(i).AssignedTo.size()));
             }
         }
@@ -167,17 +288,16 @@ public class TabFragment1 extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        if (radioPeri.isChecked()) {
+            Handler handler = new Handler();
+            handler.postDelayed(() -> {
                 try {
                     getOrders();
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
                 }
                 mAdapter.notifyDataSetChanged();
-            }
-        }, 1000);
+            }, 1000);
+        }
     }
 }

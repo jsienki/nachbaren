@@ -13,16 +13,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static ch.eltra.notkauf.MainActivity.handler;
 
@@ -39,7 +31,7 @@ public class PopupAddRequest extends Activity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width * 0.8), (int) (height * 0.4));
+        getWindow().setLayout((int) (width * 0.8), (int) (height * 0.5));
 
         EditText textInput = findViewById(R.id.textInput);
         TextView limit = findViewById(R.id.limit);
@@ -73,22 +65,25 @@ public class PopupAddRequest extends Activity {
                msgModel.Shop = foodCheck.isChecked();
                msgModel.Other = otherCheck.isChecked();
 
+               if (!msgModel.Car && !msgModel.Drugstore && !msgModel.Shop && !msgModel.Other) {
+                   msgModel.Other = true;
+               }
+
                Gson myMsgGson = new GsonBuilder().setPrettyPrinting().create();
                Gson myOrderGson = new GsonBuilder().setPrettyPrinting().create();
 
                OrderModel myOrderModel = new OrderModel();
-               String msgJson = myMsgGson.toJson(msgModel);
 
-               myOrderModel.Message = msgJson;
+               myOrderModel.Message = myMsgGson.toJson(msgModel);
 
                String orderJson = myOrderGson.toJson(myOrderModel);
 
                try {
                    int responseCode = handler.post("/api/Orders/add", orderJson);
                    if (responseCode == 200) {
-                       Toast.makeText(this, "Successful", Toast.LENGTH_LONG).show();
+                       Toast.makeText(this, getString(R.string.success), Toast.LENGTH_LONG).show();
                    } else {
-                       Toast.makeText(this, "Adding request failed", Toast.LENGTH_LONG).show();
+                       Toast.makeText(this, getString(R.string.adding_req_failed), Toast.LENGTH_LONG).show();
                    }
                    finish();
                } catch (IOException e) {
@@ -97,9 +92,7 @@ public class PopupAddRequest extends Activity {
            }
         });
 
-        cancelButton.setOnClickListener(v -> {
-            finish();
-        });
+        cancelButton.setOnClickListener(v -> finish());
 
     }
 }

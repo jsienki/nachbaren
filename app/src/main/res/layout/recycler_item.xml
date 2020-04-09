@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:layout_margin="4dp"
@@ -13,9 +14,10 @@
 
         <TextView
             android:id="@+id/text1"
+            android:text="@string/uuid"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Request"
             android:textSize="20sp" />
 
         <TextView
@@ -23,21 +25,23 @@
             android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/peopleImg" />
+            android:layout_toStartOf="@id/peopleImg"
+            tools:ignore="RelativeOverlap" />
 
         <ImageView
             android:id="@+id/peopleImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_people_black_24dp" />
+            android:src="@drawable/ic_people_black_24dp"
+            android:contentDescription="@string/people_desc" />
 
         <TextView
             android:id="@+id/text2"
+            android:text="@string/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/text1"
-            android:text="Details"
             android:textSize="16sp" />
 
         <TextView
@@ -46,9 +50,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:text="Details"
+            android:text="@string/details"
             android:textColor="@android:color/holo_blue_light"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            tools:ignore="RelativeOverlap" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -59,36 +64,39 @@
                 android:id="@+id/foodImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_local_dining_black_24dp" />
+                android:src="@drawable/ic_local_dining_black_24dp"
+                android:contentDescription="@string/food_desc" />
 
             <ImageView
                 android:id="@+id/drugImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_local_pharmacy_black_24dp" />
+                android:src="@drawable/ic_local_pharmacy_black_24dp"
+                android:contentDescription="@string/drug_desc" />
 
             <ImageView
                 android:id="@+id/transportImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_local_shipping_black_24dp" />
+                android:src="@drawable/ic_local_shipping_black_24dp"
+                android:contentDescription="@string/transport_desc" />
 
             <ImageView
                 android:id="@+id/otherImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_star_black_24dp" />
+                android:src="@drawable/ic_star_black_24dp"
+                android:contentDescription="@string/other_desc" />
 
         </LinearLayout>
 
-
         <TextView
             android:id="@+id/distanceText"
+            android:text="@string/distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:text="Distance"
             android:textSize="16sp" />
     </RelativeLayout>
 

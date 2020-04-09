@@ -1,3 +1,90 @@
 <resources>
-    <string name="app_name">NotKauf</string>
+    <string name="app_name" translatable="false">NotKauf</string>
+    <!-- activity_main.xml -->
+    <string name="sign_in">Sign In</string>
+    <string name="e_mail" translatable="false">E-Mail</string>
+    <string name="password" >Password</string>
+    <string name="remember">Remember Me</string>
+    <string name="sign_up">Sign Up</string>
+    <!-- MainActivity.java -->
+    <string name="success">Success!</string>
+    <string name="login_failed">Sign in failed!</string>
+    <string name="fields_empty">Fields are empty!</string>
+    <!-- signup.xml -->
+    <string name="rPassword">Repeat Password</string>
+    <string name="close_text">Close</string>
+    <string name="terms">By signing up you agree to our <a href="https://notkauf.ch/tos/">Terms of Use</a> and <a href="https://notkauf.ch/privacy/">Privacy Policy</a>.</string>
+    <!-- SignUp.java -->
+    <string name="email_empty">E-Mail is empty!</string>
+    <string name="length_warning">Your password should be at least 4 characters long!</string>
+    <string name="no_match">The passwords don\'t match!</string>
+    <string name="taken">The username is already taken!</string>
+    <string name="sign_up_failed">Sign up failed!</string>
+    <!-- MenuActivity.java -->
+    <string name="need_help">Need Help</string>
+    <string name="my_requests">My Requests</string>
+    <string name="settings">Settings</string>
+    <string name="m_postal">Postal Code</string>
+    <!-- tab_frag1.xml -->
+    <string name="perimeter">My Perimeter</string>
+    <!-- TabFragment1.java -->
+    <string name="contact_warning">Setup your contact data before accessing orders!</string>
+    <string name="city">City</string>
+    <string name="region">Region</string>
+    <string name="country">Country</string>
+    <!-- tab_frag2.xml -->
+    <string name="add_req">Add Request</string>
+    <string name="accepted_req">Accepted Requests</string>
+    <!-- tab_frag3.xml -->
+    <string name="name">Name*</string>
+    <string name="phone">Phone*</string>
+    <string name="country_set">Country*</string>
+    <string name="region_set">Region*</string>
+    <string name="city_set">City*</string>
+    <string name="postal_code">Postal Code*</string>
+    <string name="street">Street*</string>
+    <string name="notice">Notice</string>
+    <string name="save">Save</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="about">About</string>
+    <string name="name_hint">ex. John Smith</string>
+    <string name="phone_hint">ex. +1 000–000–0000</string>
+    <string name="region_hint">ex. California</string>
+    <string name="city_hint">ex. Los Angeles</string>
+    <string name="postal_hint">ex. 90001</string>
+    <string name="street_hint">ex. Marshall Street 32</string>
+    <string name="notice_hint">ex. 2nd floor, right door</string>
+    <string name="contact_data">Contact Data</string>
+    <string name="switzerland">Switzerland</string>
+    <!-- TabFragment3.java -->
+    <string name="contact_failed">Saving contact failed!</string>
+    <string name="required_fields_empty">Required fields (*) are empty!</string>
+    <!-- PopupAddRequest -->
+    <string name="adding_req_failed">Adding request failed!</string>
+    <!-- popup_addreq.xml -->
+    <string name="food">Food</string>
+    <string name="drugstore">Drugstore</string>
+    <string name="transport">Transport</string>
+    <string name="other">Other</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="text_limit" translatable="false">0/255</string>
+    <!-- details_menu.xml -->
+    <string name="accept">Accept</string>
+    <string name="leave">Leave</string>
+    <string name="close">Close</string>
+    <string name="helpers">Helpers</string>
+    <!-- recycler_item.xml -->
+    <string name="details">Details</string>
+    <string name="food_desc">Food image</string>
+    <string name="drug_desc">Drugstore image</string>
+    <string name="transport_desc">Car image</string>
+    <string name="other_desc">Misc image</string>
+    <string name="people_desc">People image</string>
+    <string name="uuid" translatable="false">Uuid</string>
+    <string name="time">Time</string>
+    <string name="distance">Distance</string>
+    <!-- details_item.xml -->
+    <string name="phone_desc">Phone image</string>
+    <string name="search">Search</string>
 </resources>

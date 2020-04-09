@@ -1,15 +1,17 @@
 package ch.eltra.notkauf;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
@@ -22,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
     Button signUpButton;
     EditText usernameInput, passwordInput;
     CheckBox rememberCheck;
-    String username;
-    String password;
     int responseCode;
     static HTTPHandler handler;
 
@@ -31,11 +31,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         handler = new HTTPHandler("https://notkauf.ch");
         setItems();
+        loadData();
+    }
+
+    void loadData() {
+        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+        Gson gson = new Gson();
+        String myJSON = mPrefs.getString("MyObject", "");
+        MyCreds myObject = gson.fromJson(myJSON, MyCreds.class);
+        if (myObject != null) {
+            usernameInput.setText(myObject.username);
+            passwordInput.setText(myObject.password);
+            rememberCheck.setChecked(true);
+        }
     }
 
     void setItems() {
@@ -46,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
         rememberCheck = findViewById(R.id.rememberCheck);
 
         loginButton.setOnClickListener(v -> {
-            login();
+            String username = usernameInput.getText().toString();
+            String password = passwordInput.getText().toString();
+            login(username, password);
         });
 
         signUpButton.setOnClickListener(v -> {
@@ -55,15 +69,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void login() {
-        if (!usernameInput.getText().toString().equals("")) {
-            username = usernameInput.getText().toString();
-            password = passwordInput.getText().toString();
-            if (rememberCheck.isChecked()) {
-                Log.d("WIP", "Password saved!");
-            }
-
-            Map<String, String> params = new HashMap<String, String>();
+    void login(String username, String password) {
+        if (!username.equals("") && !password.equals("")) {
+            Map<String, String> params = new HashMap<>();
             params.put("login", username);
             params.put("password", password);
             params.put("name", "test");
@@ -76,22 +84,32 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (responseCode == 200) {
-                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_LONG).show();
+                if (rememberCheck.isChecked()) {
+                    saveLoginDetails(username, password);
+                }
+                Toast.makeText(MainActivity.this, getString(R.string.success), Toast.LENGTH_LONG).show();
                 Intent myIntent = new Intent(MainActivity.this, MenuActivity.class);
                 MainActivity.this.startActivity(myIntent);
             } else {
-                Toast.makeText(MainActivity.this, "Invalid Input", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, getString(R.string.login_failed), Toast.LENGTH_LONG).show();
             }
 
-            try {
-                int response = handler.get("/api/Emergency/number");
-                Toast.makeText(MainActivity.this, "" + response, Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         } else {
-            Log.d("Error", "Fields are empty!");
+            Toast.makeText(MainActivity.this, getString(R.string.fields_empty), Toast.LENGTH_LONG).show();
         }
+    }
+
+    void saveLoginDetails(String username, String password) {
+        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+        MyCreds myObject = new MyCreds();
+        myObject.username = username;
+        myObject.password = password;
+        Gson gson = new Gson();
+        String myJSON = gson.toJson(myObject);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+
+        prefsEditor.putString("MyObject", myJSON);
+        prefsEditor.apply();
     }
 
 }

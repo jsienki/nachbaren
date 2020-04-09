@@ -1,6 +1,6 @@
 package ch.eltra.notkauf;
 
-public class RecyclerItem {
+class RecyclerItem {
     private String mText1;
     private String mText2;
     private String mText3;
@@ -10,7 +10,7 @@ public class RecyclerItem {
     private Boolean mOther;
     private int mPeople;
 
-    public RecyclerItem(String text1, String text2, String text3, Boolean food, Boolean drugs, Boolean car, Boolean other, int people) {
+    RecyclerItem(String text1, String text2, String text3, Boolean food, Boolean drugs, Boolean car, Boolean other, int people) {
         mText1 = text1;
         mText2 = text2;
         mText3 = text3;
@@ -21,23 +21,23 @@ public class RecyclerItem {
         mPeople = people;
     }
 
-    public String getText1() {
+    String getText1() {
         return mText1;
     }
 
-    public String getText2() {
+    String getText2() {
         return mText2;
     }
 
-    public String getText3() { return mText3; }
+    String getText3() { return mText3; }
 
-    public Boolean getFood() { return mFood; }
+    Boolean getFood() { return mFood; }
 
-    public Boolean getDrugs() { return mDrugs; }
+    Boolean getDrugs() { return mDrugs; }
 
-    public Boolean getCar() { return mCar; }
+    Boolean getCar() { return mCar; }
 
-    public Boolean getOther() { return mOther; }
+    Boolean getOther() { return mOther; }
 
-    public int getPeople() { return mPeople; }
+    int getPeople() { return mPeople; }
 }

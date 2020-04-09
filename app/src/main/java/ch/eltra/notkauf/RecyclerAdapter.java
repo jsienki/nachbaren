@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static android.view.View.GONE;
@@ -19,14 +20,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onDetailsClick(int position);
+        void onDetailsClick(int position) throws IOException;
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
     }
 
-    public RecyclerAdapter(ArrayList<RecyclerItem> recyclerList) {
+    RecyclerAdapter(ArrayList<RecyclerItem> recyclerList) {
         mRecyclerList = recyclerList;
     }
     @NonNull
@@ -68,18 +69,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
         return mRecyclerList.size();
     }
 
-    public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
-        public TextView mTextView1;
-        public TextView mTextView2;
-        public TextView mTextView3;
-        public TextView mTextView4;
-        public TextView mTextView5;
-        public ImageView mFood;
-        public ImageView mDrugs;
-        public ImageView mCar;
-        public ImageView mOther;
+    static class RecyclerViewHolder extends RecyclerView.ViewHolder {
+        TextView mTextView1;
+        TextView mTextView2;
+        TextView mTextView3;
+        TextView mTextView4;
+        TextView mTextView5;
+        ImageView mFood;
+        ImageView mDrugs;
+        ImageView mCar;
+        ImageView mOther;
 
-        public RecyclerViewHolder(@NonNull View itemView, OnItemClickListener listener) {
+        RecyclerViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             mTextView1 = itemView.findViewById(R.id.text1);
             mTextView2 = itemView.findViewById(R.id.text2);
@@ -95,7 +96,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
                if (listener != null) {
                    int position = getAdapterPosition();
                    if (position != RecyclerView.NO_POSITION) {
-                       listener.onDetailsClick(position);
+                       try {
+                           listener.onDetailsClick(position);
+                       } catch (IOException e) {
+                           e.printStackTrace();
+                       }
                    }
                }
             });

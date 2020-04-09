@@ -1,6 +1,6 @@
 package ch.eltra.notkauf;
 
-public class OrderModel {
+class OrderModel {
     String Uuid;
     int Status;
     String Message;
