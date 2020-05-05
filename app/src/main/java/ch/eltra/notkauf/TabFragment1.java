@@ -60,7 +60,7 @@ public class TabFragment1 extends Fragment {
 
         JSONObject contact = null;
         try {
-            contact = handler.getJSON("/api/Contacts/get");
+            contact = handler.getJSON("/api/Contacts/get-contact");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -216,7 +216,7 @@ public class TabFragment1 extends Fragment {
         ArrayAdapter adapter2 = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_dropdown_item, items2);
         countrySpinner.setAdapter(adapter2);
 
-        JSONArray regions = handler.getJSONArrayParams3("/api/Regional/regions", "CH", "de");
+        JSONArray regions = handler.getJSONArrayParams3("/api/Regional/get-regions", "CH", "de");
         Gson gson = new Gson();
         Type listType = new TypeToken<List<RegionModel>>() {
         }.getType();
@@ -246,20 +246,20 @@ public class TabFragment1 extends Fragment {
 
     private void getOrders() throws IOException, JSONException {
         JSONArray orders = null;
-        JSONObject contact = handler.getJSON("/api/Contacts/get");
+        JSONObject contact = handler.getJSON("/api/Contacts/get-contact");
         if (contact != null) {
             switch (dropdown.getSelectedItemPosition()) {
                 case 0:
-                    orders = handler.getJSONArrayParams2("/api/Orders/get-postal-code", "CH", contact.get("PostalCode").toString());
+                    orders = handler.getJSONArrayParams2("/api/Orders/get-orders-by-postal-code", "CH", contact.get("PostalCode").toString());
                     break;
                 case 1:
-                    orders = handler.getJSONArrayParams("/api/Orders/get-all-region", "CH", contact.get("Region").toString(), contact.get("City").toString());
+                    orders = handler.getJSONArrayParams("/api/Orders/get-orders-by-region", "CH", contact.get("Region").toString(), contact.get("City").toString());
                     break;
                 case 2:
-                    orders = handler.getJSONArrayParams("/api/Orders/get-all-Region", "CH", contact.get("Region").toString(), null);
+                    orders = handler.getJSONArrayParams("/api/Orders/get-orders-by-region", "CH", contact.get("Region").toString(), null);
                     break;
                 case 3:
-                    orders = handler.getJSONArrayParams("/api/Orders/get-all-Region", "CH", null, null);
+                    orders = handler.getJSONArrayParams("/api/Orders/get-orders-by-region", "CH", null, null);
                     break;
                 default:
                     break;

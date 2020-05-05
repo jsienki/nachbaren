@@ -48,7 +48,7 @@ public class TabFragment2 extends Fragment {
         addRequest.setOnClickListener(v -> {
             JSONObject contact = null;
             try {
-                contact = handler.getJSON("/api/Contacts/get");
+                contact = handler.getJSON("/api/Contacts/get-contact");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -110,7 +110,7 @@ public class TabFragment2 extends Fragment {
     }
 
     private void getOrders() throws IOException {
-        JSONArray orders = handler.getJSONArray("/api/Orders/get");
+        JSONArray orders = handler.getJSONArray("/api/Orders/get-my-orders");
         Gson gson = new Gson();
         Type listType = new TypeToken<List<OrderModel>>() {
         }.getType();
@@ -118,7 +118,7 @@ public class TabFragment2 extends Fragment {
         if (orders != null) {
             List<OrderModel> modelList = gson.fromJson(orders.toString(), listType);
             for (int i = 0; i < modelList.size(); i++) {
-                JSONObject myJSON = handler.getJSONParams("/api/Orders/info", modelList.get(i).Uuid);
+                JSONObject myJSON = handler.getJSONParams("/api/Orders/get-order-details", modelList.get(i).Uuid);
                 if (myJSON != null) {
                     OrderInfoModel infoModel = gson.fromJson(myJSON.toString(), OrderInfoModel.class);
                     MessageModel msgModel = gson.fromJson(infoModel.Order.Message, MessageModel.class);

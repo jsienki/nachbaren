@@ -79,7 +79,7 @@ public class DetailsPopup extends Activity {
         myJSON = null;
 
         try {
-            myJSON = handler.getJSONParams("/api/Orders/info", Uuid);
+            myJSON = handler.getJSONParams("/api/Orders/get-order-details", Uuid);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,7 +105,7 @@ public class DetailsPopup extends Activity {
                     OrderInfoModel infoModel = gson.fromJson(myJSON.toString(), OrderInfoModel.class);
                     OrderModel order = infoModel.Order;
                     order.Status = 2;
-                    int responseCode = handler.post("/api/Orders/change", gson.toJson(order));
+                    int responseCode = handler.post("/api/Orders/change-order", gson.toJson(order));
                     if (responseCode == 200) {
                         Toast.makeText(DetailsPopup.this, getString(R.string.success), Toast.LENGTH_LONG).show();
                     }
@@ -123,7 +123,7 @@ public class DetailsPopup extends Activity {
                     OrderInfoModel infoModel = gson.fromJson(myJSON.toString(), OrderInfoModel.class);
                     OrderModel order = infoModel.Order;
                     order.Status = 3;
-                    int responseCode = handler.post("/api/Orders/change", gson.toJson(order));
+                    int responseCode = handler.post("/api/Orders/change-order", gson.toJson(order));
                     if (responseCode == 200) {
                         Toast.makeText(DetailsPopup.this, getString(R.string.success), Toast.LENGTH_LONG).show();
                     }
@@ -141,7 +141,7 @@ public class DetailsPopup extends Activity {
                     OrderInfoModel infoModel = gson.fromJson(myJSON.toString(), OrderInfoModel.class);
                     OrderModel order = infoModel.Order;
                     order.Status = 4;
-                    int responseCode = handler.post("/api/Orders/change", gson.toJson(order));
+                    int responseCode = handler.post("/api/Orders/change-order", gson.toJson(order));
                     if (responseCode == 200) {
                         Toast.makeText(DetailsPopup.this, getString(R.string.success), Toast.LENGTH_LONG).show();
                     }

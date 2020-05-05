@@ -1,6 +1,6 @@
 package ch.eltra.notkauf;
 
-class Contact {
+class ContactModel {
     String Name;
     String Phone;
     String Street;

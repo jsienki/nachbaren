@@ -79,7 +79,7 @@ public class PopupAddRequest extends Activity {
                String orderJson = myOrderGson.toJson(myOrderModel);
 
                try {
-                   int responseCode = handler.post("/api/Orders/add", orderJson);
+                   int responseCode = handler.post("/api/Orders/add-order", orderJson);
                    if (responseCode == 200) {
                        Toast.makeText(this, getString(R.string.success), Toast.LENGTH_LONG).show();
                    } else {

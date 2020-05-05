@@ -4,6 +4,6 @@ import java.util.List;
 
 class OrderInfoModel {
     OrderModel Order;
-    Contact CreatedBy;
-    List<Contact> AssignedTo;
+    ContactModel CreatedBy;
+    List<ContactModel> AssignedTo;
 }

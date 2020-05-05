@@ -87,4 +87,8 @@
     <!-- details_item.xml -->
     <string name="phone_desc">Phone image</string>
     <string name="search">Search</string>
+    <string name="first_name_hint">John</string>
+    <string name="last_name_hint">Smith</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
 </resources>
