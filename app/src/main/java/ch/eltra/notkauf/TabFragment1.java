@@ -189,7 +189,7 @@ public class TabFragment1 extends Fragment {
                         for (int j = 0; j < assignedList.size(); j++) {
                             ContactModel contact = assignedList.get(j);
 
-                            if (contact.Uuid == _contact.get("Uuid").toString()) {
+                            if (contact.Uuid.equals(_contact.get("Uuid").toString())) {
                                 hasAccepted = true;
                                 break;
                             }

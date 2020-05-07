@@ -126,11 +126,9 @@ public class DetailsPopup extends Activity {
 
                     AssignmentEntryModel assignmentEntryModel = new AssignmentEntryModel();
 
-                    final int Assigned = 1;
-
                     assignmentEntryModel.createdByUuid = contactUuid;
                     assignmentEntryModel.orderUuid = order.Uuid;
-                    assignmentEntryModel.status = Assigned;
+                    assignmentEntryModel.status = AssignedStatus.Assigned.ordinal();
 
                     int responseCode = handler.post("/api/orders/set-order-assignment?api-version=1.1", gson.toJson(assignmentEntryModel));
 
@@ -190,11 +188,9 @@ public class DetailsPopup extends Activity {
 
                     AssignmentEntryModel assignmentEntryModel = new AssignmentEntryModel();
 
-                    final int Unassigned = 4;
-
                     assignmentEntryModel.createdByUuid = contactUuid;
                     assignmentEntryModel.orderUuid = order.Uuid;
-                    assignmentEntryModel.status = Unassigned;
+                    assignmentEntryModel.status = AssignedStatus.Unassigned.ordinal();
 
                     int responseCode = handler.post("/api/orders/set-order-assignment?api-version=1.1", gson.toJson(assignmentEntryModel));
 
