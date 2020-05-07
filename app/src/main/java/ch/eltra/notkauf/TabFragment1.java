@@ -43,6 +43,7 @@ public class TabFragment1 extends Fragment {
     private SwipeRefreshLayout mSwipeContainer;
     private RadioButton radioPeri, radioSearch;
     private EditText cityEdit, postalEdit;
+    JSONObject _contact = null;
 
     @Nullable
     @Override
@@ -58,13 +59,12 @@ public class TabFragment1 extends Fragment {
         cityEdit = view.findViewById(R.id.cityEdit);
         postalEdit = view.findViewById(R.id.postalEdit);
 
-        JSONObject contact = null;
         try {
-            contact = handler.getJSON("/api/Contacts/get-contact");
+            _contact = handler.getJSON("/api/Contacts/get-contact");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (contact == null) {
+        if (_contact == null) {
             radioSearch.setChecked(true);
             radioPeri.setChecked(false);
             dropdown.setEnabled(false);
@@ -79,7 +79,6 @@ public class TabFragment1 extends Fragment {
             cityEdit.setEnabled(false);
             postalEdit.setEnabled(false);
         }
-
 
         try {
             setupSpinner();
@@ -171,19 +170,39 @@ public class TabFragment1 extends Fragment {
 
     }
 
-    private boolean checkIfAccepted(String uuid) throws IOException {
+    private boolean checkIfAccepted(String uuid)
+    {
         boolean hasAccepted = false;
-        JSONArray myJSON = handler.getJSONArray("/api/Orders/get-assigned");
-        Gson gson = new Gson();
-        Type listType = new TypeToken<List<OrderInfoModel>>() {
-        }.getType();
-        if (myJSON != null) {
-            List<OrderInfoModel> modelList = gson.fromJson(myJSON.toString(), listType);
-            for (int i = 0; i < modelList.size(); i++) {
-                if (uuid.equals(modelList.get(i).Order.Uuid)) {
-                    hasAccepted = true;
+
+        try {
+            JSONArray myJSON = handler.getJSONArray("/api/Orders/get-assigned");
+            Gson gson = new Gson();
+            Type listType = new TypeToken<List<OrderInfoModel>>() {
+            }.getType();
+            if (myJSON != null) {
+                List<OrderInfoModel> modelList = gson.fromJson(myJSON.toString(), listType);
+
+                for (int i = 0; i < modelList.size() && !hasAccepted; i++) {
+                    List<ContactModel> assignedList = modelList.get(i).AssignedTo;
+
+                    if (assignedList != null) {
+                        for (int j = 0; j < assignedList.size(); j++) {
+                            ContactModel contact = assignedList.get(j);
+
+                            if (contact.Uuid == _contact.get("Uuid").toString()) {
+                                hasAccepted = true;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
+        }
+        catch (IOException ioEx)
+        {
+        }
+        catch(JSONException jsonEx)
+        {
         }
 
         return hasAccepted;

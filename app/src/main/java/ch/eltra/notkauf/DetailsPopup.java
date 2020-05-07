@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ import static android.view.View.GONE;
 import static ch.eltra.notkauf.MainActivity.handler;
 
 public class DetailsPopup extends Activity {
-    TextView uuidText, messageText, nameText, streetText, cityText, noticeText, phoneText, helpersText;
+    TextView uuidText, messageText, firstNameText, lastNameText, streetText, cityText, noticeText, phoneText, helpersText;
     Button acceptButton, closeButton, cancelButton, leaveButton;
     private ArrayList<DetailsItem> recyclerList;
     private JSONObject myJSON;
@@ -37,7 +38,8 @@ public class DetailsPopup extends Activity {
 
         uuidText = findViewById(R.id.uuidText);
         messageText = findViewById(R.id.messageText);
-        nameText = findViewById(R.id.nameText);
+        firstNameText = findViewById(R.id.firstNameText);
+        lastNameText = findViewById(R.id.lastNameText);
         streetText = findViewById(R.id.streetText);
         cityText = findViewById(R.id.cityText);
         noticeText = findViewById(R.id.noticeText);
@@ -86,12 +88,14 @@ public class DetailsPopup extends Activity {
 
         if (myJSON != null) {
             Gson gson = new Gson();
+
             OrderInfoModel infoModel = gson.fromJson(myJSON.toString(), OrderInfoModel.class);
             MessageModel msgModel = gson.fromJson(infoModel.Order.Message, MessageModel.class);
 
             uuidText.setText(infoModel.Order.Uuid);
             messageText.setText(msgModel.Notice);
-            nameText.setText(infoModel.CreatedBy.Name);
+            firstNameText.setText(infoModel.CreatedBy.FirstName);
+            lastNameText.setText(infoModel.CreatedBy.LastName);
             streetText.setText(infoModel.CreatedBy.Street);
             cityText.setText(infoModel.CreatedBy.PostalCode + " " + infoModel.CreatedBy.City);
             noticeText.setText(infoModel.CreatedBy.Notice);
@@ -102,10 +106,34 @@ public class DetailsPopup extends Activity {
             if (myJSON != null) {
                 try {
                     Gson gson = new Gson();
+                    String contactUuid = null;
+
+                    JSONObject contact = null;
+                    try {
+                        contact = handler.getJSON("/api/Contacts/get-contact");
+
+                        contactUuid = contact.get("Uuid").toString();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                     OrderInfoModel infoModel = gson.fromJson(myJSON.toString(), OrderInfoModel.class);
+
                     OrderModel order = infoModel.Order;
-                    order.Status = 2;
-                    int responseCode = handler.post("/api/Orders/change-order", gson.toJson(order));
+
+                    AssignmentEntryModel assignmentEntryModel = new AssignmentEntryModel();
+
+                    final int Assigned = 1;
+
+                    assignmentEntryModel.createdByUuid = contactUuid;
+                    assignmentEntryModel.orderUuid = order.Uuid;
+                    assignmentEntryModel.status = Assigned;
+
+                    int responseCode = handler.post("/api/orders/set-order-assignment?api-version=1.1", gson.toJson(assignmentEntryModel));
+
                     if (responseCode == 200) {
                         Toast.makeText(DetailsPopup.this, getString(R.string.success), Toast.LENGTH_LONG).show();
                     }
@@ -122,7 +150,11 @@ public class DetailsPopup extends Activity {
                     Gson gson = new Gson();
                     OrderInfoModel infoModel = gson.fromJson(myJSON.toString(), OrderInfoModel.class);
                     OrderModel order = infoModel.Order;
-                    order.Status = 3;
+
+                    final int Closed = 3;
+
+                    order.Status = Closed;
+
                     int responseCode = handler.post("/api/Orders/change-order", gson.toJson(order));
                     if (responseCode == 200) {
                         Toast.makeText(DetailsPopup.this, getString(R.string.success), Toast.LENGTH_LONG).show();
@@ -138,10 +170,34 @@ public class DetailsPopup extends Activity {
             if (myJSON != null) {
                 try {
                     Gson gson = new Gson();
+                    String contactUuid = null;
+
+                    JSONObject contact = null;
+                    try {
+                        contact = handler.getJSON("/api/Contacts/get-contact");
+
+                        contactUuid = contact.get("Uuid").toString();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                     OrderInfoModel infoModel = gson.fromJson(myJSON.toString(), OrderInfoModel.class);
+
                     OrderModel order = infoModel.Order;
-                    order.Status = 4;
-                    int responseCode = handler.post("/api/Orders/change-order", gson.toJson(order));
+
+                    AssignmentEntryModel assignmentEntryModel = new AssignmentEntryModel();
+
+                    final int Unassigned = 4;
+
+                    assignmentEntryModel.createdByUuid = contactUuid;
+                    assignmentEntryModel.orderUuid = order.Uuid;
+                    assignmentEntryModel.status = Unassigned;
+
+                    int responseCode = handler.post("/api/orders/set-order-assignment?api-version=1.1", gson.toJson(assignmentEntryModel));
+
                     if (responseCode == 200) {
                         Toast.makeText(DetailsPopup.this, getString(R.string.success), Toast.LENGTH_LONG).show();
                     }
@@ -165,9 +221,12 @@ public class DetailsPopup extends Activity {
             Gson gson = new Gson();
             OrderInfoModel infoModel = gson.fromJson(myJSON.toString(), OrderInfoModel.class);
             for (int i = 0; i < infoModel.AssignedTo.size(); i++) {
-                String a = infoModel.AssignedTo.get(i).Name;
-                String b = infoModel.AssignedTo.get(i).Phone;
-                recyclerList.add(new DetailsItem(a, b));
+
+                String firstName = infoModel.AssignedTo.get(i).FirstName;
+                String lastName = infoModel.AssignedTo.get(i).LastName;
+                String phone = infoModel.AssignedTo.get(i).Phone;
+
+                recyclerList.add(new DetailsItem(firstName + " " + lastName, phone));
             }
         }
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);

@@ -1,7 +1,9 @@
 package ch.eltra.notkauf;
 
 class ContactModel {
-    String Name;
+    String Uuid;
+    String FirstName;
+    String LastName;
     String Phone;
     String Street;
     String City;

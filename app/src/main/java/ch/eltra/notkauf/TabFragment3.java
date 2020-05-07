@@ -1,5 +1,7 @@
 package ch.eltra.notkauf;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -62,7 +64,16 @@ public class TabFragment3 extends Fragment {
         }
 
         aboutButton.setOnClickListener(v -> {
-            
+            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+            alertDialog.setTitle("About");
+            alertDialog.setMessage("App developed by Eltra.ch");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
         });
 
         JSONObject contact = null;
@@ -76,8 +87,8 @@ public class TabFragment3 extends Fragment {
                 String firstName = contact.get("FirstName").toString();
                 String lastName = contact.get("LastName").toString();
 
-                firstNameEdit.setText(contact.get("FirstName").toString());
-                lastNameEdit.setText(contact.get("LastName").toString());
+                firstNameEdit.setText(firstName);
+                lastNameEdit.setText(lastName);
                 phoneEdit.setText(contact.get("Phone").toString());
                 streetEdit.setText(contact.get("Street").toString());
                 cityEdit.setText(contact.get("City").toString());
@@ -93,23 +104,25 @@ public class TabFragment3 extends Fragment {
                 pcCodeEdit.setText(contact.get("PostalCode").toString());
                 noticeEdit.setText(contact.get("Notice").toString());
 
-            } catch (JSONException e) {
+                } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         }
 
         saveButton.setOnClickListener(v -> {
-            boolean nameEmpty = TextUtils.isEmpty(firstNameEdit.getText().toString());
+            boolean firstNameEmpty = TextUtils.isEmpty(firstNameEdit.getText().toString());
+            boolean lastNameEmpty = TextUtils.isEmpty(lastNameEdit.getText().toString());
             boolean phoneEmpty = TextUtils.isEmpty(phoneEdit.getText().toString());
             boolean streetEmpty = TextUtils.isEmpty(streetEdit.getText().toString());
             boolean cityEmpty = TextUtils.isEmpty(cityEdit.getText().toString());
             boolean regionEmpty = TextUtils.isEmpty(region.getSelectedItem().toString());
             boolean postalEmpty = TextUtils.isEmpty(pcCodeEdit.getText().toString());
 
-            if (!(nameEmpty || phoneEmpty || streetEmpty || cityEmpty || regionEmpty ||postalEmpty)) {
+            if (!(firstNameEmpty || lastNameEmpty || phoneEmpty || streetEmpty || cityEmpty || regionEmpty ||postalEmpty)) {
                 Map<String, String> params = new HashMap<>();
                 params.put("firstName", firstNameEdit.getText().toString());
+                params.put("lastName", lastNameEdit.getText().toString());
                 params.put("phone", phoneEdit.getText().toString());
                 params.put("street", streetEdit.getText().toString());
                 params.put("city", cityEdit.getText().toString());
@@ -118,6 +131,7 @@ public class TabFragment3 extends Fragment {
                 params.put("notice", noticeEdit.getText().toString());
                 params.put("longitude", "0");
                 params.put("latitude", "0");
+
                 String jsonString = new JSONObject(params).toString();
 
                 try {

@@ -24,7 +24,13 @@
         android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/nameText"
+        android:id="@+id/firstNameText"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/lastNameText"
         android:textSize="16sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
